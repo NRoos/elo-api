@@ -8,15 +8,6 @@
 
 (def rank-multiplier 32)
 
-(defn format-result
-  [label old-val new-val]
-  (str label ": " (Math/round (double new-val))
-       " (" (if (pos? (- new-val old-val))
-              "+"
-              "")
-       (Math/round (double (- new-val old-val)))
-       ")"))
-
 (defn expected-value
   [playerA playerB]
   (/ 1
