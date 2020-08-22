@@ -6,27 +6,35 @@
      '[ring.middleware.defaults :refer :all]
      '[ring.util.response :only [response]])
 
-(def rank-multiplier 32)
+(def rank-multiplier 16)
+
+(defn to-two-digits
+  "Rounds to a at-most 2 significant digits."
+  [number]
+  (/ (Math/round (* 100
+                    (double number)))
+     100.0))
 
 (defn expected-value
   "Calculates the expected score of playerA.
   In a game where a win is worth 1 point, a draw is 0.5 points and a loss is worth 0 points.
   A difference of 200 elo should translate to about 0.75 which means A should win 75% of the time."
   [playerA playerB]
-  (/ 1
-     (+ 1
-        (Math/pow 10
-                  (/ (- playerB playerA)
-                     400)))))
+  (to-two-digits
+    (/ 1
+       (+ 1
+          (Math/pow 10
+                    (/ (- playerB playerA)
+                       400))))))
 
 (defn new-elo
   "Calculates the new elo-score based on current elo, expected score and the actual result."
   [current-elo expected actual]
-  (+
+  (int (+
    current-elo
    (* rank-multiplier
       (- actual
-         expected))))
+         expected)))))
 
 (defn play
   "Calculates the new elo-ratings for player a and player b.
@@ -41,8 +49,8 @@
         new-b (new-elo b
                        (expected-value b a)
                        (- 1 result))]
-    {:a (Math/round (double new-a))
-     :b (Math/round (double new-b))}))
+    {:a new-a
+     :b new-b}))
 
 (defn handle-post
   [req]
