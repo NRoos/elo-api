@@ -18,17 +18,23 @@
 (defn expected-value
   "Calculates the expected score of playerA.
   In a game where a win is worth 1 point, a draw is 0.5 points and a loss is worth 0 points.
-  A difference of 200 elo should translate to about 0.75 which means A should win 75% of the time."
+  A difference of 200 elo should translate to about 0.75 which means A should win 75% of the time.
+  If the difference of ratings is greater than 400, a difference of 400 is used instead."
   [playerA playerB]
-  (to-two-digits
-    (/ 1
-       (+ 1
-          (Math/pow 10
-                    (/ (- playerB playerA)
-                       400))))))
+  (let [difference (- playerB playerA)
+        difference-for-calc (cond
+                     (> difference 400) 400
+                     (< difference -400) -400
+                     :else difference)]
+    (to-two-digits
+      (/ 1
+         (+ 1
+            (Math/pow 10
+                      (/ difference-for-calc
+                         400)))))))
 
 (defn new-elo
-  "Calculates the new elo-score based on current elo, expected score and the actual result."
+  "Calculates a new elo-score."
   [current-elo expected actual]
   (int (+
    current-elo
