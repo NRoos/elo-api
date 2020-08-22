@@ -23,9 +23,9 @@
   [playerA playerB]
   (let [difference (- playerB playerA)
         difference-for-calc (cond
-                     (> difference 400) 400
-                     (< difference -400) -400
-                     :else difference)]
+                              (> difference 400) 400
+                              (< difference -400) -400
+                              :else difference)]
     (to-two-digits
       (/ 1
          (+ 1
@@ -37,10 +37,10 @@
   "Calculates a new elo-score."
   [current-elo expected actual]
   (Math/round (+
-   current-elo
-   (* rank-multiplier
-      (- actual
-         expected)))))
+               current-elo
+               (* rank-multiplier
+                  (- actual
+                     expected)))))
 
 (defn play
   "Calculates the new elo-ratings for player a and player b.
