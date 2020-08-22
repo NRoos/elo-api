@@ -9,6 +9,9 @@
 (def rank-multiplier 32)
 
 (defn expected-value
+  "Calculates the expected score of playerA.
+  In a game where a win is worth 1 point, a draw is 0.5 points and a loss is worth 0 points.
+  A difference of 200 elo should translate to about 0.75 which means A should win 75% of the time."
   [playerA playerB]
   (/ 1
      (+ 1
@@ -17,6 +20,7 @@
                      400)))))
 
 (defn new-elo
+  "Calculates the new elo-score based on current elo, expected score and the actual result."
   [current-elo expected actual]
   (+
    current-elo
@@ -25,6 +29,13 @@
          expected))))
 
 (defn play
+  "Calculates the new elo-ratings for player a and player b.
+  game should be a map object with the following form:
+  {
+    a: <Current elo-rating of player a, as an integer>
+    b: <Current elo-rating of player b, as an integer>
+    result: <the result of the game as an integer, 1 meaning A won, 0.5 meaning a draw and 0 for B's victory>.
+  }"
   [game]
   (let [a (game "a")
         b (game "b")
