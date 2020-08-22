@@ -30,17 +30,12 @@
 
 (defn play
   "Calculates the new elo-ratings for player a and player b.
-  game should be a map object with the following form:
-  {
-    a: <Current elo-rating of player a, as an integer>
-    b: <Current elo-rating of player b, as an integer>
-    result: <the result of the game as an integer, 1 meaning A won, 0.5 meaning a draw and 0 for B's victory>.
-  }"
-  [game]
-  (let [a (game "a")
-        b (game "b")
-        result (game "result")
-        new-a (new-elo a
+  a: <Current elo-rating of player a, as an integer>
+  b: <Current elo-rating of player b, as an integer>
+  result: <the result of the game as an integer, 1 meaning A won, 0.5 meaning a draw and 0 for B's victory>.
+  "
+  [a b result]
+  (let [new-a (new-elo a
                        (expected-value a b)
                        result)
         new-b (new-elo b
@@ -49,9 +44,16 @@
     {:a (Math/round (double new-a))
      :b (Math/round (double new-b))}))
 
+(defn handle-post
+  [req]
+  (let [body (req :body)]
+    (play (body "a")
+          (body "b")
+          (body "result"))))
+
 (defroutes app-routes
   (GET "/" [] (response {:msg "Hello World!"}))
-  (POST "/" req (response (play (req :body))))
+  (POST "/" req (response (handle-post req)))
   (route/not-found "Not Found"))
 
 (def app
