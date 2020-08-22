@@ -36,7 +36,7 @@
 (defn new-elo
   "Calculates a new elo-score."
   [current-elo expected actual]
-  (int (+
+  (Math/round (+
    current-elo
    (* rank-multiplier
       (- actual
