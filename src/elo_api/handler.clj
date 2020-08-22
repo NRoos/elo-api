@@ -2,8 +2,8 @@
   (:require [compojure.core :refer :all]
             [compojure.route :as route]))
 
-(use '[ring.middleware.json :only [wrap-json-params]]
-     '[ring.middleware.defaults :only [api-defaults]]
+(use '[ring.middleware.json :as middleware]
+     '[ring.middleware.defaults :refer :all]
      '[ring.util.response :only [response]])
 
 (def rank-multiplier 32)
@@ -44,16 +44,17 @@
         new-b (new-elo b
                        (expected-value b a)
                        (- 1 result))]
-    (str
-      (format-result "A" a new-a)
-      "\n"
-      (format-result "B" b new-b)
-      "\n")))
+    {:a (Math/round (double new-a))
+     :b (Math/round (double new-b))}))
 
 (defroutes app-routes
-  (GET "/" [] "hello")
-  (POST "/" req (play (req :params)))
+  (GET "/" [] (response {:msg "Hello World!"}))
+  (POST "/" req (response (play (req :body))))
   (route/not-found "Not Found"))
 
 (def app
-  (wrap-json-params app-routes api-defaults))
+  (->
+    app-routes
+    (middleware/wrap-json-body)
+    (middleware/wrap-json-response)
+    (wrap-defaults api-defaults)))
