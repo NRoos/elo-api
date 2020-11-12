@@ -66,7 +66,7 @@
           (body "result"))))
 
 (defroutes app-routes
-  (GET "/" [] (response {:msg "Hello World!"}))
+  (GET "/" [] (response {:msg "Nothing to see, try POSTing some json like: {\"a\":1500, \"b\": 1500, \"result\": 1}!"}))
   (POST "/" req (response (handle-post req)))
   (route/not-found "Not Found"))
 
